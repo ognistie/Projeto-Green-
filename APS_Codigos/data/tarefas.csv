@@ -1,0 +1,13 @@
+nivel,tarefa,descricao,pontos_minimo,pontos_maximo
+Básico,Coleta Seletiva,"Separe corretamente o lixo reciclável (papel, plástico, metal, vidro)",15,25
+Básico,Economia de Água,Tome um banho com menos de 10 minutos,15,25
+Básico,Economia de Energia,Desligue aparelhos da tomada quando não estiver usando,15,25
+Básico,Transporte Sustentável,Use transporte público ou bicicleta por um dia,20,30
+Básico,Consumo Consciente,"Evite usar sacos plásticos, leve uma sacola reutilizável",15,25
+Intermediário,Horta Caseira,Plante uma mudinha em casa e documente o progresso,30,50
+Intermediário,Redução de Resíduos,Compre produtos com menos embalagem,25,40
+Intermediário,Compostagem,Inicie um processo de compostagem caseira,35,50
+Intermediário,Atividade Comunitária,Participe de uma ação ambiental da comunidade,40,60
+Avançado,Educação Ambiental,Ensine alguém sobre práticas sustentáveis,50,70
+Avançado,Projeto de Impacto,Implemente um projeto sustentável na sua comunidade,60,80
+Avançado,Redução de Carbono,Calcule sua pegada de carbono e crie um plano de redução,55,75

@@ -19,7 +19,7 @@ os.makedirs(DATA_DIR, exist_ok=True)
 if not os.path.exists(USER_FILE):
     with open(USER_FILE, "w", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
-        # adicionamos a coluna 'rewards' para registrar recompensas resgatadas pelo usuário
+        # adicionei essas coluna 'rewards' para registrar recompensas resgatadas pelo usuário
         writer.writerow(["email", "senha", "nome", "pontos", "nivel", "ultimo_login", "badges", "rewards"])
 
 if not os.path.exists(PROGRESS_FILE):
@@ -41,7 +41,7 @@ if not os.path.exists(TASKS_FILE):
         ]
         writer.writerows(default_tasks)
 
-# cria arquivo de recompensas padrão se não existir
+# esse bloco aqui cria arquivo de recompensas padrão se não existir
 if not os.path.exists(REWARDS_FILE):
     with open(REWARDS_FILE, "w", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
@@ -63,7 +63,7 @@ def md5(text: str) -> str:
 
 def carregar_usuarios():
     users = {}
-    # lidar com header antigo ou novo: DictReader retornará apenas colunas presentes.
+    # isso e para lidar com header antigo ou novo: DictReader retornará apenas colunas presentes.
     with open(USER_FILE, "r", encoding="utf-8") as f:
         reader = csv.DictReader(f)
         for row in reader:
@@ -82,7 +82,7 @@ def salvar_usuarios_dict(users: dict):
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
         for u in users.values():
-            # garantir chaves existam antes de escrever
+            # essa fita aqui e para garantir chaves existam antes de escrever
             row = {
                 "email": u.get("email",""),
                 "senha": u.get("senha",""),
@@ -152,7 +152,7 @@ def adicionar_badge(usuario: dict, nivel: str):
     elif badge not in usuario["badges"]:
         usuario["badges"] += f", {badge}"
 
-# -------- Recompensas (novas funções) ----------
+# -------- Recompensas (novas funções) que foi adcionado recentemente  ----------
 def carregar_recompensas():
     rewards = []
     with open(REWARDS_FILE, "r", encoding="utf-8") as f:
@@ -230,7 +230,7 @@ class GreenPlusPro:
         self.root.minsize(1000, 640)
         self.usuario = None
 
-        #  paleta atualizada (tons suaves, profissional)
+        #  paleta atualizada (tons suaves)
         self.colors = {
             "primary": "#0f6b3a",      # verde esmeralda
             "accent": "#39b683",       # verde claro
@@ -879,4 +879,5 @@ if __name__ == "__main__":
     root.mainloop()
 import tkinter as tk
 from tkinter import ttk, messagebox, scrolledtext
+
 

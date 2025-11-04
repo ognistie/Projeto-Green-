@@ -5,12 +5,6 @@ from tkcalendar import Calendar
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-# =====================
-# Green+ — UI Revamp
-# - Mantive toda a lógica, arquivos e fluxo original.
-# - Apenas reestruturei e padronizei a interface (ttk, temas, paleta, espaçamentos,
-#   tipografia e pequenos ajustes de UX como feedback visual).
-# =====================
 
 # -------------- Config / Arquivos ----------------
 DATA_DIR = "data"
@@ -885,3 +879,4 @@ if __name__ == "__main__":
     root.mainloop()
 import tkinter as tk
 from tkinter import ttk, messagebox, scrolledtext
+

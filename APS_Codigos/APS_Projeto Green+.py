@@ -5,7 +5,8 @@ from tkcalendar import Calendar
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-# Tropa foi adcionado mais comentarios para as nova seção que eu criei, se vc tive lendo e tiver com duvida pode manda msg
+
+# Foi adcionado novos comentarios para os bloco das nova seção criada, foi adcionado rolando de tela (scrol para a aba conquista e tarefas) adcionado mais conteudo nessas aba
 
 # -------------- Config / Arquivos ----------------
 DATA_DIR = "data"
@@ -20,7 +21,7 @@ os.makedirs(DATA_DIR, exist_ok=True)
 if not os.path.exists(USER_FILE):
     with open(USER_FILE, "w", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
-        # adicionei essas coluna 'rewards' para registrar recompensas resgatadas pelo usuário
+        # adicionamos a coluna 'rewards' para registrar recompensas resgatadas pelo usuário
         writer.writerow(["email", "senha", "nome", "pontos", "nivel", "ultimo_login", "badges", "rewards"])
 
 if not os.path.exists(PROGRESS_FILE):
@@ -42,7 +43,7 @@ if not os.path.exists(TASKS_FILE):
         ]
         writer.writerows(default_tasks)
 
-# esse bloco aqui cria arquivo de recompensas padrão se não existir
+# cria arquivo de recompensas padrão se não existir
 if not os.path.exists(REWARDS_FILE):
     with open(REWARDS_FILE, "w", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
@@ -64,7 +65,7 @@ def md5(text: str) -> str:
 
 def carregar_usuarios():
     users = {}
-    # isso e para lidar com header antigo ou novo: DictReader retornará apenas colunas presentes.
+    # lidar com header antigo ou novo: DictReader retornará apenas colunas presentes.
     with open(USER_FILE, "r", encoding="utf-8") as f:
         reader = csv.DictReader(f)
         for row in reader:
@@ -83,7 +84,7 @@ def salvar_usuarios_dict(users: dict):
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
         for u in users.values():
-            # essa fita aqui e para garantir chaves existam antes de escrever
+            # garantir chaves existam antes de escrever
             row = {
                 "email": u.get("email",""),
                 "senha": u.get("senha",""),
@@ -153,7 +154,7 @@ def adicionar_badge(usuario: dict, nivel: str):
     elif badge not in usuario["badges"]:
         usuario["badges"] += f", {badge}"
 
-# -------- Recompensas (novas funções) que foi adcionado recentemente  ----------
+# -------- Recompensas (novas funções) ----------
 def carregar_recompensas():
     rewards = []
     with open(REWARDS_FILE, "r", encoding="utf-8") as f:
@@ -231,7 +232,7 @@ class GreenPlusPro:
         self.root.minsize(1000, 640)
         self.usuario = None
 
-        #  paleta atualizada (tons suaves)
+        #  paleta atualizada (tons suaves, profissional)
         self.colors = {
             "primary": "#0f6b3a",      # verde esmeralda
             "accent": "#39b683",       # verde claro
@@ -322,11 +323,6 @@ class GreenPlusPro:
         for w in self.topbar_right.winfo_children(): w.destroy()
 
         ttk.Label(self.topbar_left, text="Green+", style="Header.TLabel").pack(side=tk.LEFT, padx=(6,12))
-        # search field (visual only) for UX
-        search_var = tk.StringVar()
-        sv = ttk.Entry(self.topbar_left, textvariable=search_var, width=30)
-        sv.pack(side=tk.LEFT, padx=(0,12))
-        sv.insert(0, "Pesquisar tarefas, dicas...")
 
         if self.usuario:
             ttk.Label(self.topbar_right, text=f"👋 {self.usuario['nome']}", font=("Segoe UI", 11), background=self.colors['topbar']).pack(side=tk.LEFT, padx=10)
@@ -456,6 +452,27 @@ class GreenPlusPro:
         ttk.Button(btns, text="Cadastrar", command=register_action, style="Accent.TButton").pack(side=tk.LEFT, padx=6)
         ttk.Button(btns, text="Voltar", command=self.show_login).pack(side=tk.LEFT, padx=6)
 
+
+    # Helper genérico para criar área com rolagem
+    def _create_scrollable_area(self, parent):
+        canvas = tk.Canvas(parent, bg=self.colors["bg"], highlightthickness=0)
+        scrollbar = ttk.Scrollbar(parent, orient="vertical", command=canvas.yview)
+        scrollable_frame = tk.Frame(canvas, bg=self.colors["bg"])
+
+        scrollable_frame.bind(
+            "<Configure>",
+            lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
+        )
+
+        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+        canvas.configure(yscrollcommand=scrollbar.set)
+
+        canvas.pack(side="left", fill="both", expand=True)
+        scrollbar.pack(side="right", fill="y")
+
+        # permite rolar com o scroll do mouse
+        canvas.bind_all("<MouseWheel>", lambda e: canvas.yview_scroll(int(-1*(e.delta/120)), "units"))
+        return scrollable_frame
     # 
     # Dashboard 
     def show_dashboard(self):
@@ -547,8 +564,7 @@ class GreenPlusPro:
 
         ttk.Label(frame, text="Tarefas Disponíveis", style="Header.TLabel").pack(anchor="w", pady=(6,8))
 
-        content = tk.Frame(frame, bg=self.colors["bg"]) 
-        content.pack(fill=tk.BOTH, expand=True)
+        content = self._create_scrollable_area(frame)
 
         left = tk.Frame(content, bg=self.colors["bg"]) 
         left.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(0,12))
@@ -716,9 +732,13 @@ class GreenPlusPro:
         """
         if not self._ensure_user(): return
         self.clear_body()
-        ttk.Label(self.body, text="Conquistas e Recompensas", style="Header.TLabel").pack(anchor="w", padx=20, pady=(12,6))
-        frame = tk.Frame(self.body, bg=self.colors["bg"]) 
-        frame.pack(fill=tk.BOTH, expand=True, padx=20, pady=6)
+        # Centraliza o título no topo
+        title_frame = tk.Frame(self.body, bg=self.colors["bg"])
+        title_frame.pack(fill=tk.X, pady=(12,6))
+        ttk.Label(title_frame, text="Conquistas e Recompensas", style="Header.TLabel").pack(anchor="center")
+
+        # Área rolável
+        frame = self._create_scrollable_area(self.body)
 
         top = tk.Frame(frame, bg=self.colors["bg"]) 
         top.pack(fill=tk.X, pady=(0,8))
@@ -880,7 +900,3 @@ if __name__ == "__main__":
     root.mainloop()
 import tkinter as tk
 from tkinter import ttk, messagebox, scrolledtext
-
-
-
-

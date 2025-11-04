@@ -5,7 +5,7 @@ from tkcalendar import Calendar
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-#tropa foi adcionado mais comentarios para as nova seção que eu criei, se vc tive lendo e tiver com duvida pode manda msg
+# Tropa foi adcionado mais comentarios para as nova seção que eu criei, se vc tive lendo e tiver com duvida pode manda msg
 
 # -------------- Config / Arquivos ----------------
 DATA_DIR = "data"
@@ -880,6 +880,7 @@ if __name__ == "__main__":
     root.mainloop()
 import tkinter as tk
 from tkinter import ttk, messagebox, scrolledtext
+
 
 
 

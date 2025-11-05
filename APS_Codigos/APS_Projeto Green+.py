@@ -296,7 +296,6 @@ class GreenPlusPro:
             ("Ranking", self.show_ranking, "🏆"),
             ("Conquistas", self.show_achievements, "⭐"),
             ("Minhas Recompensas", self.show_my_rewards, "✨"),  # <-- ADICIONADO AQUI
-            ("Recompensas", self.show_rewards_public, "🎁"),
             ("Perfil", self.show_profile, "👤"),
             ("Sair", self.logout, "🚪"),
         ]

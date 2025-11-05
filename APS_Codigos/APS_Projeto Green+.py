@@ -33,12 +33,12 @@ if not os.path.exists(TASKS_FILE):
         writer = csv.writer(f)
         writer.writerow(["nivel", "tarefa", "descricao", "pontos_minimo", "pontos_maximo"])
         default_tasks = [
-            ["Básico", "Coleta Seletiva", "Separe papel, plástico, metal e vidro corretamente.", 15, 25],
-            ["Básico", "Economia de Água", "Faça um banho de até 10 minutos.", 15, 25],
-            ["Básico", "Economia de Energia", "Desligue eletrodomésticos não usados por 24h.", 15, 25],
-            ["Intermediário", "Horta Caseira", "Plante uma muda e registre o crescimento.", 30, 50],
-            ["Intermediário", "Compostagem", "Inicie compostagem de restos orgânicos.", 35, 50],
-            ["Avançado", "Projeto de Impacto", "Crie um projeto sustentável na comunidade.", 60, 80],
+            ["Básico", "Coleta Seletiva", "Separe papel, plástico, metal e vidro corretamente.", 8, 20],
+            ["Básico", "Economia de Água", "Faça um banho de até 10 minutos.", 8, 20],
+            ["Básico", "Economia de Energia", "Desligue eletrodomésticos não usados por 24h.", 8, 20],
+            ["Intermediário", "Horta Caseira", "Plante uma muda e registre o crescimento.", 10, 20],
+            ["Intermediário", "Compostagem", "Inicie compostagem de restos orgânicos.", 10, 20],
+            ["Avançado", "Projeto de Impacto", "Crie um projeto sustentável na comunidade.", 10, 25],
         ]
         writer.writerows(default_tasks)
 
@@ -97,19 +97,19 @@ def salvar_usuarios_dict(users: dict):
             writer.writerow(row)
 
 def definir_nivel(pontos: int) -> str:
-    if pontos < 100:
+    if pontos < 80:
         return "Básico"
-    elif pontos < 300:
+    elif pontos < 180:
         return "Intermediário"
     else:
         return "Avançado"
 
 def pontos_para_proximo_nivel(pontos: int):
     # simples referência de transição; pode ajustar conforme relatório.
-    if pontos < 100:
-        return 100 - pontos
-    elif pontos < 300:
-        return 300 - pontos
+    if pontos < 80:
+        return 80 - pontos
+    elif pontos < 180:
+        return 180- pontos
     else:
         return 0
 
@@ -295,6 +295,7 @@ class GreenPlusPro:
             ("Histórico", self.show_history, "📖"),
             ("Ranking", self.show_ranking, "🏆"),
             ("Conquistas", self.show_achievements, "⭐"),
+            ("Minhas Recompensas", self.show_my_rewards, "✨"),  # <-- ADICIONADO AQUI
             ("Recompensas", self.show_rewards_public, "🎁"),
             ("Perfil", self.show_profile, "👤"),
             ("Sair", self.logout, "🚪"),
@@ -813,7 +814,7 @@ class GreenPlusPro:
             salvar_usuarios_dict(users)
             self._update_topbar()
             messagebox.showinfo("Resgate", msg)
-            self.show_achievements()
+            self.show_my_rewards()  # <-- agora abre a tela Minhas Recompensas
         else:
             messagebox.showerror("Resgate", msg)
 
@@ -892,10 +893,40 @@ class GreenPlusPro:
         messagebox.showinfo("Sessão", "Você saiu do sistema.")
         self.show_login()
 
+    # ----------------- NOVA FUNÇÃO: Minhas Recompensas -----------------
+    def show_my_rewards(self):
+        """
+        Exibe as recompensas que o usuário já resgatou (com título, descrição, nível e custo).
+        """
+        if not self._ensure_user(): return
+        self.clear_body()
+        ttk.Label(self.body, text="🎖️ Minhas Recompensas", style="Header.TLabel").pack(anchor="center", pady=(12,8))
+        frame = self._create_scrollable_area(self.body)
+        claimed = self.usuario.get("rewards", "")
+        if not claimed:
+            tk.Label(frame, text="Você ainda não resgatou nenhuma recompensa.", bg=self.colors["bg"], font=("Segoe UI", 11)).pack(pady=20)
+            return
+
+        ids = [i for i in claimed.split(";") if i]
+        rewards = []
+        for rid in ids:
+            rec = obter_recompensa_por_id(rid)
+            if rec:
+                rewards.append(rec)
+
+        if not rewards:
+            tk.Label(frame, text="Não foi possível localizar detalhes das recompensas resgatadas.", bg=self.colors["bg"]).pack(pady=10)
+            return
+
+        for r in rewards:
+            card = tk.Frame(frame, bg=self.colors["card"], bd=0, relief=tk.RIDGE)
+            card.pack(fill=tk.X, padx=6, pady=8)
+            ttk.Label(card, text=f"{r['titulo']} ({r['nivel']})", style="CardHeader.TLabel").pack(anchor="w", padx=12, pady=(8,4))
+            tk.Label(card, text=r["descricao"], bg=self.colors["card"], wraplength=800, justify="left").pack(anchor="w", padx=12, pady=(0,4))
+            tk.Label(card, text=f"Custo: {r['custo_pontos']} pts", bg=self.colors["card"], font=("Segoe UI", 9, "bold")).pack(anchor="w", padx=12, pady=(0,8))
+
 # -------------- Run app -------------
 if __name__ == "__main__":
     root = tk.Tk()
     app = GreenPlusPro(root)
     root.mainloop()
-import tkinter as tk
-from tkinter import ttk, messagebox, scrolledtext

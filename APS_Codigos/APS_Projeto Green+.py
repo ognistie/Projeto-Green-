@@ -6,7 +6,6 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 
-# Foi adcionado novos comentarios para os bloco das nova seção criada, foi adcionado rolando de tela (scrol para a aba conquista e tarefas) adcionado mais conteudo nessas aba
 
 # -------------- Config / Arquivos ----------------
 DATA_DIR = "data"
@@ -295,7 +294,7 @@ class GreenPlusPro:
             ("Calendário", self.show_calendar, "📅"),
             ("Histórico", self.show_history, "📖"),
             ("Ranking", self.show_ranking, "🏆"),
-            ("Conquistas", self.show_achievements, "🎖️"),
+            ("Conquistas", self.show_achievements, "⭐"),
             ("Recompensas", self.show_rewards_public, "🎁"),
             ("Perfil", self.show_profile, "👤"),
             ("Sair", self.logout, "🚪"),
